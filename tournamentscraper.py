@@ -68,8 +68,11 @@ class TournamentScraper():
         list_name = self._get_data_from_webelement_list(get_webelement, attribute, attribute_type)   
         return list_name 
 
-    def _save_data(self, file_name : str, *webelement_lists: list):
-        json_output = list(zip(*webelement_lists))
+    def _save_data(self, file_name : str, *webelement_lists: list, save_type : str):
+        if save_type == 'l':
+            json_output = list(zip(*webelement_lists))
+        elif save_type == 'd':
+            json_output = dict(zip(*webelement_lists))
         json_filename = f'{file_name}.json'
         with open(json_filename, 'w') as f:
             json.dump(json_output, f, indent=4, ensure_ascii="False")
