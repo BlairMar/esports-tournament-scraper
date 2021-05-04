@@ -24,27 +24,27 @@ class TournamentScraper():
         self.tournament_links = self._get_data("class_name", 'single-event-card__tourn-link', "get_attribute", "('href')")
         self.next_link = self._get_data("xpath", '//*[@id="filter_games"]/li[1]/a', "get_attribute", "('href')")
         
-        print(self.next_link)
     def _scrape(self):
 
-        for next in self.next_link:
-            tournament_details = []   
+
+        for next in self.next_link:  
             self.driver.get(next)
-            self._load_all_tournaments(0.5)
             for link in self.tournament_links:
                 self.driver.get(link)
-                tournament_details.append(self._get_data("xpath", '//*[@id="content"]/div[4]/div[2]/div', "text", None))
-                self._save_data('testingdata', tournament_details)
-                
+                tournament_names = (self._get_data('xpath' , '//h1[@class="tournament-block__title"]', "text", None))
+                tournament_field_titles = (self._get_data("xpath", '//p[@class="tournament-block__details-title"]', "text", None))
+                tournament_name_values = (self._get_data("xpath", '//span[@class="tournament-block__details-info"]', "text", None))
+                game_name = (self._get_data("xpath", '//li[1]/span[@class="title"]' , "text", None))
+                self._save_data('tournaments', 'd', 'a', game_name, tournament_names, tournament_field_titles, tournament_name_values)
 
     def _load_all_tournaments(self, pause_time : float):
-        last_scroll_height = self.driver.execute_script("return 0.8*document.body.scrollHeight")
+        last_scroll_height = self.driver.execute_script("return document.body.scrollHeight")
         while True:
-            self.driver.execute_script("window.scrollTo(0, 0.8*document.body.scrollHeight);")
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
             sleep(pause_time)
 
-            new_scroll_height = self.driver.execute_script('return 0.8*document.body.scrollHeight')
+            new_scroll_height = self.driver.execute_script('return document.body.scrollHeight')
             if new_scroll_height == last_scroll_height:
                 break
             last_scroll_height = new_scroll_height
@@ -68,13 +68,22 @@ class TournamentScraper():
         list_name = self._get_data_from_webelement_list(get_webelement, attribute, attribute_type)   
         return list_name 
 
-    def _save_data(self, file_name : str, *webelement_lists: list, save_type : str):
+    def _save_data(self, file_name : str, 
+                         save_type : str, 
+                          add_mode : str, 
+                       header_name : str, 
+                       header_values : list, 
+                  *webelement_lists: list):
+        header_name = ','.join(header_name)
+        header_values = ','.join(header_values)
         if save_type == 'l':
             json_output = list(zip(*webelement_lists))
         elif save_type == 'd':
-            json_output = dict(zip(*webelement_lists))
+            json_output = {f"{header_name}" : f"{header_values}"}
+            print(json_output)
+            json_output.update(dict(zip(*webelement_lists)))
         json_filename = f'{file_name}.json'
-        with open(json_filename, 'w') as f:
+        with open(json_filename, add_mode) as f:
             json.dump(json_output, f, indent=4, ensure_ascii="False")
 
        
