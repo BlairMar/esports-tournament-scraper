@@ -1,9 +1,13 @@
 
 #%%
 #import request
+from base64 import encodestring
 from selenium import webdriver 
 import json
 from time import sleep
+from selenium.webdriver.support.ui import WebDriverWait 
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 # Some funky things you can do to find the elements you want
 # multiple condition: //div[@class='bubble-title' and contains(text(), 'Cover')]
@@ -26,11 +30,12 @@ class TournamentScraper():
         
     def _scrape(self):
 
-
         for next in self.next_link:  
             self.driver.get(next)
+            self._load_all_tournaments(20)
             for link in self.tournament_links:
-                self.driver.get(link)
+                self.driver.get(link)#
+                sleep(2)
                 tournament_names = (self._get_data('xpath' , '//h1[@class="tournament-block__title"]', "text", None))
                 tournament_field_titles = (self._get_data("xpath", '//p[@class="tournament-block__details-title"]', "text", None))
                 tournament_name_values = (self._get_data("xpath", '//span[@class="tournament-block__details-info"]', "text", None))
@@ -43,7 +48,7 @@ class TournamentScraper():
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
             sleep(pause_time)
-
+            
             new_scroll_height = self.driver.execute_script('return document.body.scrollHeight')
             if new_scroll_height == last_scroll_height:
                 break
@@ -80,11 +85,10 @@ class TournamentScraper():
             json_output = list(zip(*webelement_lists))
         elif save_type == 'd':
             json_output = {f"{header_name}" : f"{header_values}"}
-            print(json_output)
             json_output.update(dict(zip(*webelement_lists)))
         json_filename = f'{file_name}.json'
-        with open(json_filename, add_mode) as f:
-            json.dump(json_output, f, indent=4, ensure_ascii="False")
+        with open(json_filename, add_mode, encoding='utf-8') as f:
+            json.dump(json_output, f, ensure_ascii="false", indent=4)
 
        
 test = TournamentScraper()
