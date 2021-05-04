@@ -25,17 +25,16 @@ class TournamentScraper():
         self.driver.get('https://www.esportsguide.com/events/csgo')
         sleep(2)
 
-        self.tournament_links = self._get_data("class_name", 'single-event-card__tourn-link', "get_attribute", "('href')")
-        self.next_link = self._get_data("xpath", '//*[@id="filter_games"]/li[1]/a', "get_attribute", "('href')")
+        self.next_link = self._get_data("xpath", '//*[@id="filter_games"]/li/a', "get_attribute", "('href')")
         
     def _scrape(self):
 
         for next in self.next_link:  
             self.driver.get(next)
             self._load_all_tournaments(20)
+            self.tournament_links = self._get_data("class_name", 'single-event-card__tourn-link', "get_attribute", "('href')")
             for link in self.tournament_links:
-                self.driver.get(link)#
-                sleep(2)
+                self.driver.get(link)
                 tournament_names = (self._get_data('xpath' , '//h1[@class="tournament-block__title"]', "text", None))
                 tournament_field_titles = (self._get_data("xpath", '//p[@class="tournament-block__details-title"]', "text", None))
                 tournament_name_values = (self._get_data("xpath", '//span[@class="tournament-block__details-info"]', "text", None))
@@ -48,7 +47,7 @@ class TournamentScraper():
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
             sleep(pause_time)
-            
+
             new_scroll_height = self.driver.execute_script('return document.body.scrollHeight')
             if new_scroll_height == last_scroll_height:
                 break
