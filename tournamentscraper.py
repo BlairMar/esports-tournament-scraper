@@ -28,18 +28,21 @@ class TournamentScraper():
         self.next_link = self._get_data("xpath", '//*[@id="filter_games"]/li/a', "get_attribute", "('href')")
         
     def _scrape(self):
-
+        self.json_data = []
         for next in self.next_link:  
             self.driver.get(next)
             self._load_all_tournaments(20)
-            self.tournament_links = self._get_data("class_name", 'single-event-card__tourn-link', "get_attribute", "('href')")
-            for link in self.tournament_links:
-                self.driver.get(link)
-                tournament_names = (self._get_data('xpath' , '//h1[@class="tournament-block__title"]', "text", None))
-                tournament_field_titles = (self._get_data("xpath", '//p[@class="tournament-block__details-title"]', "text", None))
-                tournament_name_values = (self._get_data("xpath", '//span[@class="tournament-block__details-info"]', "text", None))
-                game_name = (self._get_data("xpath", '//li[1]/span[@class="title"]' , "text", None))
-                self._save_data('tournaments', 'd', 'a', game_name, tournament_names, tournament_field_titles, tournament_name_values)
+        self.tournament_links = self._get_data("class_name", 'single-event-card__tourn-link', "get_attribute", "('href')")
+        for link in self.tournament_links:
+            self.driver.get(link)
+            tournament_names = (self._get_data('xpath' , '//h1[@class="tournament-block__title"]', "text", None))
+            tournament_field_titles = (self._get_data("xpath", '//p[@class="tournament-block__details-title"]', "text", None))
+            tournament_name_values = (self._get_data("xpath", '//span[@class="tournament-block__details-info"]', "text", None))
+            game_name = (self._get_data("xpath", '//li[1]/span[@class="title"]' , "text", None))
+            self.json_data.append(self._save_data('d', game_name, tournament_names, tournament_field_titles, tournament_name_values))
+
+        self._finailise_data('tournaments', 'a', self.json_data)
+
 
     def _load_all_tournaments(self, pause_time : float):
         last_scroll_height = self.driver.execute_script("return document.body.scrollHeight")
@@ -72,22 +75,23 @@ class TournamentScraper():
         list_name = self._get_data_from_webelement_list(get_webelement, attribute, attribute_type)   
         return list_name 
 
-    def _save_data(self, file_name : str, 
-                         save_type : str, 
-                          add_mode : str, 
+    def _save_data(self, save_type : str, 
                        header_name : str, 
-                       header_values : list, 
+                     header_values : list, 
                   *webelement_lists: list):
         header_name = ','.join(header_name)
         header_values = ','.join(header_values)
         if save_type == 'l':
-            json_output = list(zip(*webelement_lists))
+            self.json_output = list(zip(*webelement_lists))
         elif save_type == 'd':
-            json_output = {f"{header_name}" : f"{header_values}"}
-            json_output.update(dict(zip(*webelement_lists)))
-        json_filename = f'{file_name}.json'
-        with open(json_filename, add_mode, encoding='utf-8') as f:
-            json.dump(json_output, f, ensure_ascii="false", indent=4)
+            self.json_output = ({f"{header_name}" : f"{header_values}"})
+            self.json_output.update(dict(zip(*webelement_lists)))
+        return self.json_output
+        
+    def _finalise_data(self, json_filename :  str , add_mode : str, json_final_output):
+        self.json_filename = f'{json_filename}.json'
+        with open(self.json_filename, add_mode, encoding='utf-8') as f:
+             json.dump(json_final_output, f, ensure_ascii="false", indent=4)
 
        
 test = TournamentScraper()
