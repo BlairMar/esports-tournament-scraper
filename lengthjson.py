@@ -1,3 +1,6 @@
 import json
+from json import encoder
 
-print(len('tournaments.json'))
+with open('wowsubs.json', 'r') as handle:
+    parsed = json.load(handle)
+print(len(parsed))
