@@ -8,4 +8,4 @@ tournament_names = ('xpath' , '//h1[@class="tournament-block__title"]', "text", 
 tournament_field_titles = ("xpath", '//p[@class="tournament-block__details-title"]', "text", None)
 tournament_field_values = ("xpath", '//span[@class="tournament-block__details-info"]', "text", None)
 game_name = ("xpath", '//li[1]/span[@class="title"]' , "text", None)
-tournament_data_scraper.scrape(next_page_links, 'test' , tournament_links, False, 20, tournament_field_titles, False, tournament_field_values)
+tournament_data_scraper.scrape(next_page_links, 'test', tournament_links, True, 20, game_name, tournament_names, tournament_field_titles, False, tournament_field_values)

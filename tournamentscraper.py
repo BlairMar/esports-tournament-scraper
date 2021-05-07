@@ -1,7 +1,6 @@
 
 #%%
 #import request
-from base64 import encodestring
 from selenium import webdriver 
 import json
 from time import sleep
@@ -31,17 +30,17 @@ class TournamentScraper():
         self.json_data = []
         for next in self.next_link:  
             self.driver.get(next)
-            self._load_all_tournaments(20)
-        self.tournament_links = self._get_data("class_name", 'single-event-card__tourn-link', "get_attribute", "('href')")
-        for link in self.tournament_links:
-            self.driver.get(link)
-            tournament_names = (self._get_data('xpath' , '//h1[@class="tournament-block__title"]', "text", None))
-            tournament_field_titles = (self._get_data("xpath", '//p[@class="tournament-block__details-title"]', "text", None))
-            tournament_name_values = (self._get_data("xpath", '//span[@class="tournament-block__details-info"]', "text", None))
-            game_name = (self._get_data("xpath", '//li[1]/span[@class="title"]' , "text", None))
-            self.json_data.append(self._save_data('d', game_name, tournament_names, tournament_field_titles, tournament_name_values))
+            #self._load_all_tournaments(20)
+            self.tournament_links = self._get_data("class_name", 'single-event-card__tourn-link', "get_attribute", "('href')")
+            for link in self.tournament_links:
+                self.driver.get(link)
+                tournament_names = (self._get_data('xpath' , '//h1[@class="tournament-block__title"]', "text", None))
+                tournament_field_titles = (self._get_data("xpath", '//p[@class="tournament-block__details-title"]', "text", None))
+                tournament_name_values = (self._get_data("xpath", '//span[@class="tournament-block__details-info"]', "text", None))
+                game_name = (self._get_data("xpath", '//li[1]/span[@class="title"]' , "text", None))
+                self.json_data.append(self._save_data('d', game_name, tournament_names, tournament_field_titles, tournament_name_values))
 
-        self._finailise_data('tournaments', 'a', self.json_data)
+        self._finalise_data('tournaments', 'a', self.json_data)
 
 
     def _load_all_tournaments(self, pause_time : float):

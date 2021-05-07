@@ -1,3 +1,4 @@
+from tournamentscraper import TournamentScraper
 from selenium import webdriver
 import json
 from itertools import cycle
@@ -56,3 +57,12 @@ class WowPopScraper():
 
 wowpop = WowPopScraper()
 wowpop._scrape()
+
+#%%
+import json
+with open('tournaments.json') as f:
+     data = json.load(f)   
+
+print(data)
+print(len(data))
+# %%

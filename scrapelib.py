@@ -12,41 +12,45 @@ class Scraper():
         self.driver.get(landing_page)
         sleep(2)
 
-    def scrape(self, next_links : list,
+    def scrape(self, next_links,
                   json_filename :  str,
                next_details_page: list, 
                     scroll_page : bool, 
                  page_wait_time : float,
+                    header_name : str,
+                   header_value : str,
                       dict_keys : list,
                  dict_cycle_keys: bool,
-                *data_to_scrape : list,):
+                *data_to_scrape : list):
         
         self.json_data = []
         
-        extracted_next_page_links = self.get_data(next_links)
+        if type(next_links) == tuple:
+            extracted_next_page_links = self.get_data(next_links)
+        else:
+             extracted_next_page_links = next_links
 
-        for next_link in extracted_next_page_links:
-            self.driver.get(next_link)
+        for nextone in extracted_next_page_links:
+            self.driver.get(nextone)
             if scroll_page == True:
                 self._load_web_data(page_wait_time)
             else:
-                break
-        
-            extracted_next_details_link = self.get_data(next_details_page)
-            print(extracted_next_details_link)
+               continue
+            sleep(1)
 
+            extracted_next_details_link = self.get_data(next_details_page)
+         
             for next_page in extracted_next_details_link:
                 self.driver.get(next_page)
+                for data in (data_to_scrape):
+                    self.extracted_data = self.get_data(data)
 
-            
-
-
-                if dict_cycle_keys == "True":
-                    self.json_data.append(self._save_data('d', "", "", cycle(dict_keys), *data_to_scrape))
+                if dict_cycle_keys == True:
+                    self.json_data.append(self._save_data('d', self.get_data(header_name), self.get_data(header_value), cycle(self.get_data(dict_keys)), self.get_data(*data_to_scrape)))
                 else:
-                    self.json_data.append(self._save_data('d', "", "", dict_keys, *data_to_scrape))
+                    self.json_data.append(self._save_data('d', self.get_data(header_name), self.get_data(header_value), self.get_data(dict_keys), self.get_data(*data_to_scrape)))
 
-        self._finalise_data(f'{json_filename}', 'a', self.json_data)
+        self._finalise_data(json_filename, 'a', self.json_data)
 
 
     def get_data_from_webelement_list(self, web_element_list : list, attri : str, attri_type: str) -> list:
@@ -59,8 +63,7 @@ class Scraper():
             return self.list_name_output
 
     def get_data(self, data_location_tuple: tuple):
-
-        data_type, path, attribute, attribute_type = data_location_tuple
+        (data_type, path, attribute, attribute_type) = data_location_tuple
         self.web_ele_statement = f"self.driver.find_elements_by_{data_type}('{path}')"
         self.get_webelement = eval(self.web_ele_statement)
         self.list_name = self.get_data_from_webelement_list(self.get_webelement, attribute, attribute_type)   
@@ -82,8 +85,10 @@ class Scraper():
                        header_name : str, 
                      header_values : list, 
                   *webelement_lists: list):
+                
         header_name = ','.join(header_name)
         header_values = ','.join(header_values)
+
         if save_type == 'l':
             self.json_output = list(zip(*webelement_lists))
         elif save_type == 'd':
