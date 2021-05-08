@@ -1,4 +1,3 @@
-from tournamentscraper import TournamentScraper
 from selenium import webdriver
 import json
 from itertools import cycle
@@ -14,6 +13,9 @@ class WowPopScraper():
         self.json_data = []
         self.keys = self._get_data('xpath', '//tr/th[@scope ="col"]', "text", None)
         self.dates_subs_active_users = self._get_data('xpath', '//td[starts-with(@style ,"text-align")]', "text", None)
+        print(self.dates_subs_active_users)
+        data1 = dict(zip(cycle(self.keys), self.dates_subs_active_users))
+        print(data1)
         for stats in self.dates_subs_active_users:
             self.json_data.append(self._save_data('d', "Game Name", "Wow", cycle(self.keys), self.dates_subs_active_users))
         self._finalise_data('wowsubs', 'a', self.json_data)
@@ -59,10 +61,4 @@ wowpop = WowPopScraper()
 wowpop._scrape()
 
 #%%
-import json
-with open('tournaments.json') as f:
-     data = json.load(f)   
-
-print(data)
-print(len(data))
 # %%
