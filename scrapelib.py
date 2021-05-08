@@ -38,16 +38,15 @@ class Scraper():
                 if scroll_page == True:
                     self._load_web_data(page_wait_time)
    
-                    extracted_next_details_link = self.get_data(next_details_page)
-                    for next_page in extracted_next_details_link:
-                        self.driver.get(next_page)
+                    # extracted_next_details_link = self.get_data(next_details_page)
+                    # for next_page in extracted_next_details_link:
+                    #     self.driver.get(next_page)
 
-                        print(self.json_data)
+                    #     print(self.json_data)
                     
-                        self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape )
+                    #     self.json_data.extend(self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape ))
         
         elif next_links != None and next_details_page == None:
-            print("Entered loop")
             for nextone in extracted_next_page_links:
                 self.driver.get(nextone)
                 if scroll_page == True:
@@ -55,30 +54,29 @@ class Scraper():
                 else:
                     pass
 
-                self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape )
+                self.json_data.extend(self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape ))
+                print(self.json_data)
                         
 
         elif next_links == None and next_details_page == None:   
 
-            self.json_data.append(self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape))
+            self.json_data.extend(self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape))
 
                 
         self._finalise_data(json_filename, 'a', self.json_data)
         self.driver.quit()
 
 
-    def create_dictionary_list(self, dictionary_keys, dict_cycle, head_name, head_val, *data_values):
-        
+    def create_dictionary_list(self, dictionary_keys, dict_cycle, head_name, head_val, *data_values):  
         new_data = self.get_data(*data_values)
-        print(len(new_data))
+        self.temp_list = [] 
         for data in range(0, len(new_data), len(self.get_data(dictionary_keys))):
             if dict_cycle == True: 
-                self.temp_dict = {}          
-                self.temp_dict.update(self._save_data('d', head_name, head_val, self.get_data(dictionary_keys), new_data[data : data + (len(self.get_data(dictionary_keys))) ]))
+                self.temp_list.append(self._save_data('d', self.get_data(head_name), self.get_data(head_val), self.get_data(dictionary_keys), new_data[data : data + (len(self.get_data(dictionary_keys))) ]))
             else:
-                self.temp_dict.update(self._save_data('d', head_name, head_val, self.get_data(dictionary_keys), new_data))
+                self.temp_list.append(self._save_data('d', self.get_data(head_name), self.get_data(head_val), self.get_data(dictionary_keys), new_data))
         
-        return self.temp_dict   
+        return self.temp_list  
 
 
     def get_data_from_webelement_list(self, web_element_list : list, attri : str, attri_type: str) -> list:
@@ -90,9 +88,9 @@ class Scraper():
                     self.list_name_output.append(getattr(web_element, attri)(eval(attri_type)))
             return self.list_name_output
 
-    def get_data(self, data_location_tuple: tuple):
-        if data_location_tuple == None:
-            return None
+    def get_data(self, data_location_tuple):
+        if isinstance(data_location_tuple, str) == True:
+            return str(data_location_tuple)
         else:
             (data_type, path, attribute, attribute_type) = data_location_tuple
             self.web_ele_statement = f"self.driver.find_elements_by_{data_type}('{path}')"
@@ -115,7 +113,7 @@ class Scraper():
     #             break 
 
     def _load_web_data(self, pause_time : float):
-        last_scroll_height = self.driver.execute_script("return 0.5*document.body.scrollHeight")
+        last_scroll_height = self.driver.execute_script("return document.body.scrollHeight")
         while True:
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             
@@ -124,7 +122,7 @@ class Scraper():
             new_scroll_height = self.driver.execute_script('return document.body.scrollHeight')
             if new_scroll_height == last_scroll_height:
                 break
-            last_scroll_height = new_scroll_height
+            last_scroll_height = 0.8*new_scroll_height
 
     def _save_data(self, save_type : str, 
                        header_name : str, 

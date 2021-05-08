@@ -8,14 +8,14 @@ from scrapelib import *
 # tournament_field_titles = ("xpath", '//p[@class="tournament-block__details-title"]', "text", None)
 # tournament_field_values = ("xpath", '//span[@class="tournament-block__details-info"]', "text", None)
 # game_name = ("xpath", '//li[1]/span[@class="title"]' , "text", None)
-# tournament_data_scraper.scrape(next_page_links, 'test', tournament_links, True, 2, game_name, tournament_names, tournament_field_titles, False, tournament_field_values)
+# tournament_data_scraper.scrape(next_page_links, 'tournaments', tournament_links, True, 2, game_name, tournament_names, tournament_field_titles, False, tournament_field_values)
 
-#%%
-from scrapelib import *
-Wowscraper = Scraper('https://mmo-population.com/r/wow/stats')
-keys = ('xpath', '//tr/th[@scope ="col"]', "text", None)
-dates_subs_active_users = ('xpath', '//td[starts-with(@style ,"text-align")]', "text", None)
-Wowscraper.scrape(None, 'wowsubs', None, False, 0, "Game Name", "Wow", keys, True, dates_subs_active_users)
+# #%%
+# from scrapelib import *
+# Wowscraper = Scraper('https://mmo-population.com/r/wow/stats')
+# keys = ('xpath', '//tr/th[@scope ="col"]', "text", None)
+# dates_subs_active_users = ('xpath', '//td[starts-with(@style ,"text-align")]', "text", None)
+# Wowscraper.scrape(None, 'wowsubs', None, False, 0, "Game Name", "Wow", keys, True, dates_subs_active_users)
 
 # Steamcharts = Scraper('https://steamcharts.com/')
 # steam_next_page_list = ['https://steamcharts.com/app/252950', 
@@ -27,4 +27,12 @@ Wowscraper.scrape(None, 'wowsubs', None, False, 0, "Game Name", "Wow", keys, Tru
 #                           'https://steamcharts.com/app/386360']
 # steam_game_data = ("xpath", '//*[@class="odd"]//td', 'text' , None)
 # dict_keys_steam = ('xpath', '//*[@class="common-table"]//tr/th', 'text', None)
-# Steamcharts.scrape(steam_next_page_list, 'steamdata', None, False, 0 ,"Game", "CS:GO", dict_keys_steam, True, steam_game_data)
+# steam_game_name = ('xpath', '//*[@id="app-title"]/a', 'text', None)
+# Steamcharts.scrape(steam_next_page_list, 'steamdata', None, False, 0 ,"Game", steam_game_name, dict_keys_steam, True, steam_game_data)
+
+
+league_scraper = Scraper('https://activeplayer.io/league-of-legends/')
+league_key_values = ('xpath', '//*[@class="google-visualization-table-tr-head"]//th', 'text', None)
+league_data_values = ('xpath', '//*[@class="google-visualization-table-tr-even google"]/div/div/table/tbody/tr/td', 'text', None)
+league_scraper.scrape(None, 'leagueplayers', None, False, 0, "Game", "League of Legends", league_key_values, True, league_data_values)
+
