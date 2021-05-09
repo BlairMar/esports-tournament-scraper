@@ -4,7 +4,7 @@ This Esports Tournament scraper is designed to scrape data to analyse the questi
 
 To meet this goal the idea was to scrape esports tournament data from the web such as: tournament prize pool, tournament date, game player and location. Additionally monthly player data was scraped from website to use as a basis to compare the effect tournaments had on the active player base for each game. 
 
-Upon starting this project it was clear that the information required to analyse this question was hosted on many different websites. Due to the limitations of create an individual `.py` file for each website to scrape. I developed a  `scraper()` class which could scrape the required websites in a few lines of code. Allowing this class to have flexibility to be applied to quickly scrape web data for future projects. 
+Upon starting this project it was clear that the information required to analyse this question was hosted on many different websites. Due to the limitations of create an individual `.py` file for each website to scrape. I developed a  `Scraper()` class which could scrape the required websites in a few lines of code. Allowing this class to have flexibility to be applied to quickly scrape web data for future projects. 
 
 
 ## Installation 
