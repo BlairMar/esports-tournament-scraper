@@ -13,7 +13,7 @@ class Scraper():
 
 
         self.driver = webdriver.Chrome()          # start the web chrome driver
-        self.driver.get(landing_page)             # get the inital landing page to begin scraping
+        self.driver.get(landing_page)             # get the initial landing page to begin scraping
         sleep(2)                                  # wait 2 seconds for all elements to load
 
     def scrape(self, next_links,                  
@@ -134,6 +134,7 @@ class Scraper():
 
 
 
+
     def get_data_from_webelement_list(self, web_element_list : list, attri : str, attri_type: str) -> list:
         '''
         Extracts the required data of type specified from selenium webdriver elements.
@@ -156,6 +157,9 @@ class Scraper():
             else:
                 self.list_name_output.append(getattr(web_element, attri)(eval(attri_type)))     # get the attribute specified by attri and attri type. 
         return self.list_name_output
+
+
+
 
     def get_data(self, data_location_tuple):
         '''
@@ -181,6 +185,9 @@ class Scraper():
 
         return self.list_name 
 
+
+
+
     def _load_web_data(self, pause_time : float):
         last_scroll_height = self.driver.execute_script("return document.body.scrollHeight")
         while True:     
@@ -193,6 +200,9 @@ class Scraper():
             if new_scroll_height == last_scroll_height:
                 break
             last_scroll_height = new_scroll_height
+
+
+
 
     def _save_data(self, save_type : str, 
                        header_names, 
