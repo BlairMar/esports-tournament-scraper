@@ -1,16 +1,16 @@
 from scrapelib import *
 
-# #%%
-# tournament_data_scraper = Scraper('https://www.esportsguide.com/events/csgo')
-# next_page_links = ("xpath", '//*[@id="filter_games"]/li/a', "get_attribute", "('href')")
-# tournament_links = ("class_name", 'single-event-card__tourn-link', "get_attribute", "('href')")
-# tournament_names = ('xpath' , '//h1[@class="tournament-block__title"]', "text", None)
-# tournament_field_titles = ("xpath", '//p[@class="tournament-block__details-title"]', "text", None)
-# tournament_field_values = ("xpath", '//span[@class="tournament-block__details-info"]', "text", None)
-# game_name = ("xpath", '//li[1]/span[@class="title"]' , "text", None)
-# tournament_data_scraper.scrape(next_page_links, 'tournaments', tournament_links, True, 2, game_name, tournament_names, tournament_field_titles, False, tournament_field_values)
+#%%
+tournament_data_scraper = Scraper('https://www.esportsguide.com/events/csgo')
+next_page_links = ("xpath", '//*[@id="filter_games"]/li/a', "get_attribute", "('href')")
+tournament_links = ("class_name", 'single-event-card__tourn-link', "get_attribute", "('href')")
+tournament_names = ('xpath' , '//h1[@class="tournament-block__title"]', "text", None)
+tournament_field_titles = ("xpath", '//p[@class="tournament-block__details-title"]', "text", None)
+tournament_field_values = ("xpath", '//span[@class="tournament-block__details-info"]', "text", None)
+game_name = ("xpath", '//li[1]/span[@class="title"]' , "text", None)
+tournament_data_scraper.scrape(next_page_links, 'tournaments', tournament_links, True, 3, game_name, tournament_names, tournament_field_titles, False, tournament_field_values)
 
-# #%%
+#%%
 # from scrapelib import *
 # Wowscraper = Scraper('https://mmo-population.com/r/wow/stats')
 # keys = ('xpath', '//tr/th[@scope ="col"]', "text", None)
@@ -31,8 +31,16 @@ from scrapelib import *
 # Steamcharts.scrape(steam_next_page_list, 'steamdata', None, False, 0 ,"Game", steam_game_name, dict_keys_steam, True, steam_game_data)
 
 
-league_scraper = Scraper('https://activeplayer.io/league-of-legends/')
-league_key_values = ('xpath', '//*[@class="google-visualization-table-tr-head"]//th', 'text', None)
-league_data_values = ('xpath', '//*[@class="google-visualization-table-tr-even google"]/div/div/table/tbody/tr/td', 'text', None)
-league_scraper.scrape(None, 'leagueplayers', None, False, 0, "Game", "League of Legends", league_key_values, True, league_data_values)
+# league_scraper = Scraper('https://activeplayer.io/')
+# league_main_page_links = ['https://activeplayer.io/fornite/',
+#                           'https://activeplayer.io/garena-free-fire/',
+#                           'https://activeplayer.io/hearthstone/',
+#                           'https://activeplayer.io/arena-of-valor/',
+#                           'https://activeplayer.io/overwatch/']
+# game_names = ('xpath', '//h1[@class = "jeg_post_title"]' , 'text', None)
+# league_key_values = ('xpath', '//*[@class="google-visualization-table-tr-head"]//th', 'text', None)
+# league_data_values = ('xpath', '//*[starts-with(@class, "google-visualization-table-tr")]//td', 'text', None)
+# league_scraper.scrape(league_main_page_links, 'activeplayers', None, False, 0, "Game", game_names, league_key_values, True, league_data_values)
+
+
 
