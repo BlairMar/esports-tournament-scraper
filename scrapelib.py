@@ -7,14 +7,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys 
 
+
+
+
+
 class Scraper():
 
     def __init__(self, landing_page : str):       # specify landing_page for scraper to start from
-
-
         self.driver = webdriver.Chrome()          # start the web chrome driver
         self.driver.get(landing_page)             # get the initial landing page to begin scraping
-        sleep(2)                                  # wait 2 seconds for all elements to load
+        sleep(2)     
+        
+        # pool = ThreadPool(8)
+        # results = pool.map(self.driver.get(), next_page)                             # wait 2 seconds for all elements to load
 
     def scrape(self, next_links,                  
                   json_filename :  str,            
@@ -70,7 +75,6 @@ class Scraper():
                     for next_page in extracted_next_details_link:                         # for loop to loop through all required details pages 
                         self.driver.get(next_page)                                        # use webdriver to get the next details page and switch there
 
-                        print(self.json_data)
                         # use the create_dictionary_list function to create a new dictionary from the required data on the webpage being scraped. This is then append 
                         # to the json_data list which will be used to finalise the required data to a .json file. 
                         self.json_data.extend(self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape ))
@@ -78,8 +82,8 @@ class Scraper():
 
 
         elif next_links != None and next_details_page == None:  
-            for nextone in extracted_next_page_links:
-                self.driver.get(nextone)
+            for next_details_link in extracted_next_page_links:
+                self.driver.get(next_details_link)
                 if scroll_page == True:                     # check if webpage needs to be scrolled to load all elements
                     self._load_web_data(page_wait_time)     # Use load_web_data function to load all elements on the page. 
                 else:
@@ -96,7 +100,8 @@ class Scraper():
             # to the json_data list which will be used to finalise the required data to a .json file. 
             self.json_data.extend(self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape))
 
-                
+        # pool.close()
+        # pool.join()        
         self._finalise_data(json_filename, 'a', self.json_data)                 # use finalise data function to finalise adding data to .json file
         self.driver.quit()                                                      # finally close driver to begin next webscrape
 
@@ -189,16 +194,34 @@ class Scraper():
 
 
     def _load_web_data(self, pause_time : float):
-        last_scroll_height = self.driver.execute_script("return document.body.scrollHeight")
+        '''
+        Function to load web elements on a page before extracting
+
+        Parameters:
+        ------------------------
+        pause_time: Time to wait while web elements load
+
+        '''
+        last_scroll_height = self.driver.execute_script("return document.body.scrollHeight")   
         while True:     
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")       # scroll to the bottom of the page
             
-            self.driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_UP)
             sleep(pause_time)
+             # page up twice to makes sure loadable elements are viewed so begin loading                                                                  # wait at the bottoms of page
+            self.driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_UP)               
+            self.driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_UP)
+            # wait while page elements load
+            sleep(pause_time)
+            # continue scrolling to the end of the page
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
        
+            # get the new scroll height of the webpage
             new_scroll_height = self.driver.execute_script('return document.body.scrollHeight')
+
+            #if the new height is equal to the previous height i.e no more element have loaded then exit the scroll while loop
             if new_scroll_height == last_scroll_height:
                 break
+            
             last_scroll_height = new_scroll_height
 
 
