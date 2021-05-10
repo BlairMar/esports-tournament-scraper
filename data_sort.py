@@ -40,6 +40,7 @@ wow_subs_dataframe.columns = ['Game', 'Month', 'Peak Players', 'Avg. Players']
 total_players_df = active_players_dataframe.append(steam_charts_dataframe)
 total_players_df = total_players_df.append(wow_subs_dataframe)
 total_players_df = total_players_df.drop(columns='index')
+print(total_players_df, tournaments_dataframe)
 
 
 mydb = create_engine('mysql+pymysql://' + user + ':' + passw + '@' + host + ':' + str(port) + '/' + database , echo=False)
