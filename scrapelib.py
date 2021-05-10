@@ -8,9 +8,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys 
 
 
-
-
-
 class Scraper():
 
     def __init__(self, landing_page : str):       # specify landing_page for scraper to start from

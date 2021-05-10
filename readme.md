@@ -1,6 +1,6 @@
 # Esports Tournament Scraper
 
-This Esports Tournament scraper is designed to scrape data to analyse the question, how much can game developers increase their active player base by investing in esports tournaments. 
+This Esports Tournament scraper is designed to scrape data to analyse the question, how much can game developers increase their active player base by investing in esports tournaments?
 
 To meet this goal the idea was to scrape esports tournament data from the web such as: tournament prize pool, tournament date, game player and location. Additionally monthly player data was scraped from website to use as a basis to compare the effect tournaments had on the active player base for each game. 
 
@@ -43,7 +43,9 @@ Additional features to include in the future would be:
 
 * Apply machine learning techniques to analyse the data.
 
-* Apply machine learning techniques to automate the web scrapers ability to scrape data. 
+* Apply machine learning techniques to automate the web scrapers ability to scrape data.
+
+* Add recursive function for 
 
 ## License
 

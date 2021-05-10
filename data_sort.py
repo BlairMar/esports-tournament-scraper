@@ -2,14 +2,15 @@ import json
 import pandas as pd
 from json import encoder
 import datetime
-import pymysql
+import pymysql 
 from sqlalchemy import create_engine
 
-host=’deneme.cykgvlpxbgsw.us-east-2.rds.amazonaws.com’
+host='scraperdb.cqmjtphek8h7.us-east-2.rds.amazonaws.com'
 port=int(3306)
-user=”admin”
-passw=”Ethan105”
-database=”scraper”
+user="admin"
+passw="Ethan105"
+database="scraper"
+
 
 tournaments_dataframe = pd.read_json('tournaments.json')
 steam_charts_dataframe = pd.read_json('steamdata.json')
@@ -40,3 +41,7 @@ total_players_df = active_players_dataframe.append(steam_charts_dataframe)
 total_players_df = total_players_df.append(wow_subs_dataframe)
 total_players_df = total_players_df.drop(columns='index')
 
+
+mydb = create_engine('mysql+pymysql://' + user + ':' + passw + '@' + host + ':' + str(port) + '/' + database , echo=False)
+tournaments_dataframe.to_sql(name="Tournament_Data", con=mydb, if_exists = 'replace', index=True)
+total_players_df.to_sql(name="Player_Data", con=mydb, if_exists = 'replace', index=True)
