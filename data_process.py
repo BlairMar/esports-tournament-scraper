@@ -7,10 +7,10 @@ import psycopg2
 from sqlalchemy import create_engine
 
 # details to connect to the rds my sql database
-host='esports-scraper.cqmjtphek8h7.us-east-2.rds.amazonaws.com'
+host='esports-scraper.cb01bw8mxu9w.eu-west-1.rds.amazonaws.com'
 port=int(5432)
 user="postgres"
-passw="Ethan105"                    
+passw=""                    
 database="postgres"
 
 # import all .json files to clean
@@ -26,7 +26,7 @@ active_players_dataframe.columns = steam_charts_col_names                       
 active_players_dataframe = active_players_dataframe.drop([0])
 active_players_dataframe = active_players_dataframe.reset_index()
 
-steam_charts_dataframe['Game'] = steam_charts_dataframe['Game'].map(lambda x: x.lstrip("['").rstrip("']"))                      # remove unnessecary brackets and quotes from the steamcharts Game column
+steam_charts_dataframe['Game'] = steam_charts_dataframe['Game'].map(lambda x: x.lstrip("['").rstrip("']"))                      # remove unnecessary brackets and quotes from the steamcharts Game column
 steam_charts_dataframe = steam_charts_dataframe.drop([0])                                                                       
 steam_charts_dataframe = steam_charts_dataframe.reset_index()   
 
