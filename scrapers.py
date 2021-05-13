@@ -2,9 +2,9 @@ from scrapelib import *
 from multiprocessing.dummy import Pool as ThreadPool
 
 
-# initilise a scraper and defined landing page
+# initialise a scraper and defined landing page
 tournament_data_scraper = Scraper('https://www.esportsguide.com/events/csgo')
-# definining either the data to scrape or the links to go to on the webpage
+# defining either the data to scrape or the links to go to on the webpage
 main_page_links = ("xpath", '//*[@id="filter_games"]/li/a', "get_attribute", "('href')")
 tournament_links = ("class_name", 'single-event-card__tourn-link', "get_attribute", "('href')")
 tournament_names = ('xpath' , '//h1[@class="tournament-block__title"]', "text", None)
@@ -15,7 +15,7 @@ game_name = ("xpath", '//li[1]/span[@class="title"]' , "text", None)
 tournament_data_scraper.scrape(main_page_links, 'tournaments', tournament_links, True, 1, game_name, tournament_names, tournament_field_titles, False, tournament_field_values)  
 
 Wowscraper = Scraper('https://mmo-population.com/r/wow/stats')
-#definining either the data to scrape or the links to go to on the webpage
+# defining either the data to scrape or the links to go to on the webpage
 keys = ('xpath', '//tr/th[@scope ="col"]', "text", None)
 dates_subs_active_users = ('xpath', '//td[starts-with(@style ,"text-align")]', "text", None)
 Wowscraper.scrape(None, 'wowsubs', None, False, 0, "Game Name", "Wow", keys, True, dates_subs_active_users)
