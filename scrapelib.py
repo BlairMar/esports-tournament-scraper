@@ -77,15 +77,13 @@ class Scraper():
 
                 extracted_next_details_link = self.get_data(next_details_page) 
         
-               #extract the detail pages using get_data function
+              #extract the detail pages using get_data function
                 for next_page in extracted_next_details_link:                         # for loop to loop through all required details pages 
                     self.driver.get(next_page)                                        # use webdriver to get the next details page and switch there
 
                     #use the create_dictionary_list function to create a new dictionary from the required data on the webpage being scraped. This is then append 
                     #to the json_data list which will be used to finalise the required data to a .json file. 
                     self.json_data.extend(self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape ))
-        
-
 
         elif main_page_links != None and next_details_page == None:  
             for next_details_link in extracted_next_page_links:
@@ -212,16 +210,21 @@ class Scraper():
         '''
         last_scroll_height = self.driver.execute_script("return document.body.scrollHeight")   
         while True:     
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")       # scroll to the bottom of the page
+            self.driver.execute_script("window.scrollTo({left: 0, top: document.body.scrollHeight, behavior : 'smooth'});")       # scroll to the bottom of the page
             
+
             sleep(pause_time)
              # page up twice to makes sure loadable elements are viewed so begin loading                                                                  # wait at the bottoms of page
-            self.driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_UP)               
-            self.driver.find_element_by_tag_name('body').send_keys(Keys.PAGE_UP)
+            self.driver.execute_script("window.scrollTo({left: 0, top: 0, behavior : 'smooth'} );")             
             # wait while page elements load
             sleep(pause_time)
             # continue scrolling to the end of the page
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            self.driver.execute_script("window.scrollTo({left: 0, top: document.body.scrollHeight, behavior : 'smooth'} );")
+            sleep(pause_time)
+            self.driver.execute_script("window.scrollTo({left: 0, top: 0, behavior : 'smooth'} );") 
+            sleep(pause_time)
+            self.driver.execute_script("window.scrollTo({left: 0, top: document.body.scrollHeight, behavior : 'smooth'} );")
+            sleep(pause_time)
        
             # get the new scroll height of the webpage
             new_scroll_height = self.driver.execute_script('return document.body.scrollHeight')
