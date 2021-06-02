@@ -86,6 +86,7 @@ tournaments_dataframe = tournaments_dataframe.replace({'PUBG Mobile' : 'PUBG'})
 #tournaments_dataframe.drop(tournaments_dataframe.loc[pd.to_datetime(tournaments_dataframe['Start Date']) <= '01-2019'].index, inplace=True)                                
 tournaments_dataframe["Prize Pool"] = tournaments_dataframe["Prize Pool"].str.replace(r'\D+', '')
 
+
 # append all the tournament 
 total_players_df = active_players_dataframe.append(steam_charts_dataframe)
 total_players_df = total_players_df.append(league_players)
@@ -126,36 +127,31 @@ final_frame['Start_date'] = final_frame['Start_date'].map(datetime.datetime.toor
 final_frame['End_date'] = final_frame['End_date'].map(datetime.datetime.toordinal)
 
 final_frame = final_frame.drop(columns=['Tournament Name'])
-# game_dummies = pd.get_dummies(final_frame.Game, prefix='Game' )
+#game_dummies = pd.get_dummies(final_frame.Game, prefix='Game' )
 #game_type_dummies = pd.get_dummies(final_frame['Game_type'], prefix='Type')
-# final_frame = pd.concat([final_frame, game_dummies], axis=1)
+#final_frame = pd.concat([final_frame, game_dummies], axis=1)
 #final_frame = pd.concat([final_frame, game_type_dummies], axis=1)
+
+
+
 final_frame = final_frame.drop(columns= 'Game')
 final_frame = final_frame.drop(columns = 'Game_type')
-final_frame = final_frame.drop(columns= 'Avg_players')
-#final_frame = final_frame.drop(columns= 'Peak_players')
-final_frame = final_frame.drop(columns= 'Start_date')
-final_frame = final_frame.drop(columns= 'End_date')
-#final_frame = final_frame.drop(columns= 'Tour_days')
-#final_frame = final_frame.drop(columns= 'Prize_pool')
-# final_frame = final_frame.drop(columns= 'Month')
-final_frame_col = final_frame.columns.tolist()  
-
+#final_frame = final_frame.drop(columns= final_frame_cols)
 new_cols = {'Game_CS:GO' : 'Game_CS_GO', 'Prize Pool' : 'Prize_pool', 'Type_Battle Royale' : 'Type_Battle_royale', 'Game_Dota 2' : 'Game_Dota_2', "Game_Free Fire" : "Game_Free_fire"}
 final_frame.rename(columns=new_cols, inplace=True)
-# final_frame = final_frame.drop(columns= 'Type_Strategy')
-# final_frame = final_frame.drop(columns= 'Game_CS_GO')
+
+final_frame.to_csv('esports_data.csv', index=False)
+
+def format_string(*args):
+    final = ''
+    for item in args:
+        for elements in item:
+            final = final + '+' + elements 
+    return(final[1:])
 
 
 def pd_get():
     return final_frame
-
-#%%
-import plotly.express as px
-px.imshow(final_frame.corr(), title="Correlation heatmap of student dataframe")
-#px.scatter(final_frame, "Prize_pool", "Month", title="Year vs Sea Ice Extent (Million sq KM)")
-model1 = smf.ols("Gain ~ Avg_players + Tour_days", data=final_frame).fit()
-# print(model1.summary())
 
 
 #%%

@@ -61,7 +61,6 @@ class Scraper():
         data_to_scrape: Tuple pointing to the web elements to scrape from the website to used as dictionary values in each json entry. 
 
         '''
-        
         self.json_data = []                                         # initialise list that all dictionary elements are appended to for saving to .json
 
         if type(main_page_links) == tuple:                               # check if links to get to next main pages are a tuple containing details to extract web elements
@@ -69,29 +68,35 @@ class Scraper():
         else:
              extracted_next_page_links = main_page_links                 #otherwise leave links in a list
 
-        if main_page_links != None and next_details_page != None :          # check if webpage is needing to iterate through details pages and main pages to be scraped
+        if main_page_links != None and next_details_page != None :
+            extracted_details = self.get_data(next_details_page) 
+            for detailspage in extracted_details:
+                self.driver.get(detailspage) 
+
+                self.json_data.extend(self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape ))
+               # check if webpage is needing to iterate through details pages and main pages to be scraped
             for next_page_link in extracted_next_page_links:                # for loop to change pages after all details pages data has been received                
                 self.driver.get(next_page_link)                             # move to the main page after finishing with details pages
                 if scroll_page == True:                                     # check to see if the scroll parameter is active
                     self._load_web_data(page_wait_time)                     # run load webpage function to load all elements to be extracted on the page
 
                 extracted_next_details_link = self.get_data(next_details_page) 
-        
+               
               #extract the detail pages using get_data function
                 for next_page in extracted_next_details_link:                         # for loop to loop through all required details pages 
                     self.driver.get(next_page)                                        # use webdriver to get the next details page and switch there
-
+                    
                     #use the create_dictionary_list function to create a new dictionary from the required data on the webpage being scraped. This is then append 
                     #to the json_data list which will be used to finalise the required data to a .json file. 
                     self.json_data.extend(self.create_dictionary_list(dict_keys, dict_cycle_keys, header_names, header_value, *data_to_scrape ))
 
-        elif main_page_links != None and next_details_page == None:  
-            for next_details_link in extracted_next_page_links:
+        elif main_page_links == None and next_details_page != None:
+            extracted_next_details_link = self.get_data(next_details_page)
+
+            for next_details_link in next_details_page:
                 self.driver.get(next_details_link)
                 if scroll_page == True:                     # check if webpage needs to be scrolled to load all elements
                     self._load_web_data(page_wait_time)     # Use load_web_data function to load all elements on the page. 
-                else:
-                    pass
                 
                 # use the create_dictionary_list function to create a new dictionary from the required data on the webpage being scraped. This is then append 
                 # to the json_data list which will be used to finalise the required data to a .json file. 
@@ -146,7 +151,7 @@ class Scraper():
                 self.temp_list.append(self._save_data('d', self.get_data(head_name), self.get_data(head_val), self.get_data(dictionary_keys), new_data[data : data + (len(self.get_data(dictionary_keys))) ]))
             else:
                 self.temp_list.append(self._save_data('d', self.get_data(head_name), self.get_data(head_val), self.get_data(dictionary_keys), new_data))
-        
+                
         return self.temp_list  
 
 
@@ -170,7 +175,8 @@ class Scraper():
             if attri_type == None:                                                              
                 self.list_name_output.append(getattr(web_element, attri))                       # get the attribute specified by attri, usually a test element
             else:
-                self.list_name_output.append(getattr(web_element, attri)(eval(attri_type)))     # get the attribute specified by attri and attri type. 
+                self.list_name_output.append(getattr(web_element, attri)(eval(attri_type))) 
+       # get the attribute specified by attri and attri type. 
         return self.list_name_output
 
 
@@ -195,7 +201,6 @@ class Scraper():
 
             # pass the web elements and the required attributes to extract to the extract to the get_data_from_webelement_list function
             self.list_name = self.get_data_from_webelement_list(self.get_webelement, attribute, attribute_type)   
-
         return self.list_name 
 
 
